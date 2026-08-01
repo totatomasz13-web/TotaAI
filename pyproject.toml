@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "totaai"
+version = "0.1.0"
+description = "Czytelna biblioteka AI z polskim API"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name = "TotaAI Team"}]
+keywords = ["ai", "machine-learning", "deep-learning", "polish"]
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "build>=1.2", "ruff>=0.6"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/totaai"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

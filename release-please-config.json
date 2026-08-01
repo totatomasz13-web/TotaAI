@@ -1,0 +1,5 @@
+{
+  "packages": {".": {"release-type": "python", "package-name": "totaai"}},
+  "bump-minor-pre-major": true,
+  "changelog-sections": [{"type": "feat", "section": "Nowe"}, {"type": "fix", "section": "Poprawki"}]
+}
