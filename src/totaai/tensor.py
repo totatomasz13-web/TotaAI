@@ -91,6 +91,16 @@ class Tensor:
 
     def __repr__(self): return f"Tensor(ksztalt={self.ksztalt}, dane={self.dane!r})"
 
+    def __getstate__(self):
+        return {"dane": self.dane, "gradient": self.gradient, "wymaga_gradientu": self.wymaga_gradientu}
+
+    def __setstate__(self, state):
+        self.dane = state["dane"]
+        self.gradient = state["gradient"]
+        self.wymaga_gradientu = state["wymaga_gradientu"]
+        self._rodzice = ()
+        self._wstecz = lambda: None
+
 
 def _dodaj(stary, nowy): return nowy if stary is None else stary + nowy
 def _rozwin(x, ksztalt):
