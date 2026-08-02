@@ -1,0 +1,17 @@
+name: Propozycja funkcji
+description: Zaproponuj ulepszenie biblioteki, strony lub dokumentacji.
+title: "feat: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Jaki problem rozwiązuje funkcja?
+    validations:
+      required: true
+  - type: textarea
+    id: propozycja
+    attributes:
+      label: Proponowane API lub rozwiązanie
+    validations:
+      required: true

@@ -1,0 +1,22 @@
+name: Zgłoszenie błędu
+description: Zgłoś problem w bibliotece lub dokumentacji.
+title: "bug: "
+labels: [bug]
+body:
+  - type: textarea
+    id: opis
+    attributes:
+      label: Opis problemu
+      description: Napisz, co się stało i czego oczekiwałeś.
+    validations:
+      required: true
+  - type: textarea
+    id: kod
+    attributes:
+      label: Minimalny przykład
+      render: python
+  - type: input
+    id: wersja
+    attributes:
+      label: Wersja TotaAI i Pythona
+      placeholder: "TotaAI 0.2.0, Python 3.11"
