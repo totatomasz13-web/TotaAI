@@ -2,7 +2,7 @@ name: Wydanie PyPI
 
 on:
   push:
-    tags: ["v*.*.*"]
+    tags: ["v*.*.*", "totaai-v*.*.*"]
 
 permissions:
   id-token: write
