@@ -1,0 +1,193 @@
+# Dokumentacja TotaAI
+
+TotaAI to edukacyjna biblioteka uczenia maszynowego z prostym, polskim API.
+Aktualna wersja udostępnia rdzeń oparty na NumPy: tensory, automatyczne
+różniczkowanie, warstwy gęste, aktywacje, funkcje straty, optymalizatory i
+trening modeli.
+
+## Instalacja
+
+```bash
+pip install totaai
+```
+
+Wersja deweloperska:
+
+```bash
+git clone https://github.com/totatomasz13-web/TotaAI.git
+cd TotaAI
+pip install -e ".[dev]"
+pytest
+```
+
+## Pierwszy model
+
+```python
+import totaai as ta
+
+model = ta.Model()
+model.dodaj(
+    ta.WarstwaLiniowa(2, 8),
+    ta.Sigmoid(),
+    ta.WarstwaLiniowa(8, 1),
+    ta.Sigmoid(),
+)
+model.skompiluj(ta.MSE(), ta.Adam(tempo=0.05))
+
+dane = ta.Tensor([[0, 0], [0, 1], [1, 0], [1, 1]])
+etykiety = ta.Tensor([[0], [1], [1], [0]])
+historia = model.trenuj(dane, etykiety, epoki=500, rozmiar_partii=4)
+wynik = model.przewidz([[1, 0]])
+print(wynik.dane)
+```
+
+## Tensor i autodiff
+
+`Tensor` przechowuje dane jako `numpy.ndarray` typu `float32` i może śledzić
+gradienty. Gradienty są używane przez parametry warstw.
+
+```python
+x = ta.Tensor([2.0], wymaga_gradientu=True)
+y = x * x + 3
+y.wstecz()
+print(x.gradient)  # [4.]
+```
+
+Konstruktor:
+
+```python
+ta.Tensor(dane, wymaga_gradientu=False)
+```
+
+Publiczne właściwości i metody:
+
+- `dane` – wartości tensora jako tablica NumPy.
+- `gradient` – gradient po wywołaniu `wstecz()`.
+- `ksztalt` – kształt danych.
+- `wstecz(gradient=None)` – propagacja gradientu wstecz.
+- `wyzeruj_gradient()` – usuwa zapisany gradient.
+- `suma()` – suma wszystkich elementów.
+- `srednia()` – średnia wszystkich elementów.
+
+Obsługiwane są operatory `+`, `-`, `*`, `@` oraz jednoargumentowy `-`.
+
+## Warstwy
+
+Każda warstwa może być wywołana jako funkcja (`warstwa(x)`) albo przez
+`przepusc(x)`. Metoda `parametry()` zwraca trenowalne tensory.
+
+### `WarstwaLiniowa(wejscia, wyjscia)`
+
+Warstwa gęsta wykonująca `x @ wagi + bias`.
+
+```python
+warstwa = ta.WarstwaLiniowa(784, 128)
+```
+
+Udostępnia `wagi`, `bias`, `przepusc(x)` i `parametry()`.
+
+### `ReLU()`
+
+Zwraca `max(0, x)`. Jest typową aktywacją dla ukrytych warstw sieci.
+
+### `Sigmoid()`
+
+Zwraca wartości z zakresu `(0, 1)`. Przydatna m.in. w wyjściu klasyfikacji
+binarnej.
+
+### `Softmax()`
+
+Normalizuje ostatni wymiar do rozkładu prawdopodobieństwa. Przydatna przy
+klasyfikacji wieloklasowej.
+
+### Własna warstwa
+
+```python
+class Podwoj(Warstwa):
+    def przepusc(self, x):
+        return x * 2
+```
+
+## Funkcje straty
+
+### `MSE()`
+
+Średni błąd kwadratowy dla regresji:
+
+```python
+strata = ta.MSE()(przewidywane, oczekiwane)
+```
+
+### `EntropiaKrzyzowa()`
+
+Stabilna numerycznie entropia krzyżowa dla logitów i indeksów klas:
+
+```python
+strata = ta.EntropiaKrzyzowa()(logity, klasy)
+```
+
+`klasy` powinny zawierać indeksy klas, np. `[0, 2, 1]`.
+
+## Optymalizatory
+
+### `SGD(tempo=0.01, ped=0.0)`
+
+Prosty spadek gradientu. `tempo` oznacza learning rate, a `ped` dodaje
+regularyzację L2.
+
+### `Adam(tempo=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8)`
+
+Adaptacyjny optymalizator z momentami pierwszego i drugiego rzędu.
+
+Oba optymalizatory posiadają `krok(parametry)` i
+`wyzeruj_gradient(parametry)`. Zwykle są używane przez `Model.trenuj()`.
+
+## Model
+
+```python
+model = ta.Model()
+```
+
+- `dodaj(*warstwy)` – dodaje warstwy i zwraca model, więc można łączyć wywołania.
+- `skompiluj(strata, optymalizator)` – konfiguruje trening.
+- `przepusc(x)` – propagacja w przód dla tensora.
+- `przewidz(x)` – predykcja dla tensora, listy lub tablicy NumPy.
+- `parametry()` – wszystkie parametry trenowalne.
+- `podsumowanie()` – wypisuje architekturę i liczbę parametrów.
+- `ocen(dane, etykiety)` – zwraca średnią wartość funkcji straty.
+- `zapisz(sciezka)` – zapisuje model wraz z wagami.
+- `Model.wczytaj(sciezka)` – odczytuje zapisany model.
+
+### Trening
+
+```python
+historia = model.trenuj(
+    dane,
+    etykiety,
+    epoki=10,
+    rozmiar_partii=32,
+    tasuj=True,
+    pokazuj_postep=True,
+)
+```
+
+Metoda zwraca listę strat, po jednej wartości na epokę. `rozmiar_partii=None`
+oznacza trening pełnym zbiorem. `tasuj` domyślnie miesza przykłady na początku
+każdej epoki.
+
+## Zapis i import modelu
+
+```python
+model.zapisz("model.tota")
+odtworzony = ta.Model.wczytaj("model.tota")
+print(odtworzony.przewidz([[1, 0]]).dane)
+```
+
+Format jest przeznaczony dla zaufanych plików lokalnych. Nie wczytuj plików
+modeli pochodzących z nieznanego źródła.
+
+## Aktualny zakres
+
+Obecna wersja nie zawiera jeszcze CNN, RNN, Transformerów, autoenkoderów,
+przetwarzania obrazów/audio, GPU ani gotowych loaderów danych. Te elementy są
+planowane jako osobne moduły, aby nie komplikować stabilnego rdzenia.

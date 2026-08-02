@@ -43,6 +43,9 @@ npm install
 npm run dev
 ```
 
+Pełna dokumentacja API znajduje się w [docs/API.md](docs/API.md) oraz na
+stronie projektu: https://totaai.pages.dev/#dokumentacja.
+
 ## Licencja
 
 MIT
