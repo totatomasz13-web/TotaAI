@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/totatomasz13-web/TotaAI/compare/totaai-v0.3.0...totaai-v0.4.0) (2026-08-02)
+
+
+### Nowe
+
+* add optional CUDA backend with CuPy ([#9](https://github.com/totatomasz13-web/TotaAI/issues/9)) ([c6aa908](https://github.com/totatomasz13-web/TotaAI/commit/c6aa908aa38b3ec58646757e23eb0a91619b3ffe))
+
 ## [0.3.0](https://github.com/totatomasz13-web/TotaAI/compare/totaai-v0.2.0...totaai-v0.3.0) (2026-08-02)
 
 
