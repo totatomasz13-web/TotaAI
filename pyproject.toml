@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "totaai"
-version = "0.1.0"
+version = "0.2.0"
 description = "Czytelna biblioteka AI z polskim API"
 readme = "README.md"
 requires-python = ">=3.9"
