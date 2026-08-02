@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from typing import Iterable, Optional, Tuple
 import numpy as np
 
 
-def _tensor(x) -> "Tensor":
+def _tensor(x) -> Tensor:
     return x if isinstance(x, Tensor) else Tensor(x)
 
 
@@ -13,13 +12,13 @@ class Tensor:
 
     def __init__(self, dane, wymaga_gradientu: bool = False, _rodzice=(), _wstecz=None):
         self.dane = np.asarray(dane, dtype=np.float32)
-        self.gradient: Optional[np.ndarray] = None
+        self.gradient: np.ndarray | None = None
         self.wymaga_gradientu = wymaga_gradientu
         self._rodzice = _rodzice
         self._wstecz = _wstecz or (lambda: None)
 
     @property
-    def ksztalt(self) -> Tuple[int, ...]:
+    def ksztalt(self) -> tuple[int, ...]:
         return self.dane.shape
 
     def wyzeruj_gradient(self):
@@ -69,6 +68,19 @@ class Tensor:
         return wynik
 
     __rmul__ = __mul__
+
+    def __truediv__(self, other):
+        other = _tensor(other)
+        wynik = Tensor(self.dane / other.dane, self.wymaga_gradientu or other.wymaga_gradientu, (self, other))
+        def wstecz():
+            if wynik.gradient is not None:
+                if self.wymaga_gradientu: self.gradient = _dodaj(self.gradient, _rozwin(wynik.gradient / other.dane, self.dane.shape))
+                if other.wymaga_gradientu: other.gradient = _dodaj(other.gradient, _rozwin(-wynik.gradient * self.dane / (other.dane ** 2), other.dane.shape))
+        wynik._wstecz = wstecz
+        return wynik
+
+    def __rtruediv__(self, other):
+        return _tensor(other) / self
 
     def __matmul__(self, other):
         other = _tensor(other)
