@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/totatomasz13-web/TotaAI/compare/totaai-v0.2.0...totaai-v0.3.0) (2026-08-02)
+
+
+### Nowe
+
+* add regularization losses metrics and data tools ([#8](https://github.com/totatomasz13-web/TotaAI/issues/8)) ([95553e1](https://github.com/totatomasz13-web/TotaAI/commit/95553e15f857de79a12399002d9177a0843666f3))
+* expand website into tutorial learning hub ([#7](https://github.com/totatomasz13-web/TotaAI/issues/7)) ([e2f10ac](https://github.com/totatomasz13-web/TotaAI/commit/e2f10acaa25c4e041738155bd9f9c87302f3b591))
+
+
+### Poprawki
+
+* publish Release Please tags to PyPI ([1fd18e9](https://github.com/totatomasz13-web/TotaAI/commit/1fd18e911a704554d4319f03b8b9807d02e7dd0a))
+
 ## [0.2.0](https://github.com/totatomasz13-web/TotaAI/compare/totaai-v0.1.0...totaai-v0.2.0) (2026-08-02)
 
 
