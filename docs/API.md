@@ -100,6 +100,17 @@ binarnej.
 Normalizuje ostatni wymiar do rozkładu prawdopodobieństwa. Przydatna przy
 klasyfikacji wieloklasowej.
 
+### `Tanh()` i `LeakyReLU(nachylenie=0.01)`
+
+`Tanh` zwraca wartości z zakresu od `-1` do `1`. `LeakyReLU` zachowuje małe
+nachylenie dla wartości ujemnych zamiast zerować je jak ReLU.
+
+### `Dropout(prawdopodobienstwo=0.5)`
+
+W czasie treningu losowo wyłącza część aktywacji. `Model.przewidz()` oraz
+`Model.ocen()` automatycznie przełączają model w tryb ewaluacji, więc Dropout
+nie wprowadza losowości do predykcji.
+
 ### Własna warstwa
 
 ```python
@@ -127,6 +138,12 @@ strata = ta.EntropiaKrzyzowa()(logity, klasy)
 ```
 
 `klasy` powinny zawierać indeksy klas, np. `[0, 2, 1]`.
+
+### `MAE()` i `EntropiaBinarna()`
+
+`MAE` to średni błąd bezwzględny dla regresji, mniej wrażliwy na wartości
+odstające niż MSE. `EntropiaBinarna` służy do klasyfikacji 0/1 i wymaga
+wyjścia `Sigmoid()`.
 
 ## Optymalizatory
 
@@ -174,6 +191,34 @@ historia = model.trenuj(
 Metoda zwraca listę strat, po jednej wartości na epokę. `rozmiar_partii=None`
 oznacza trening pełnym zbiorem. `tasuj` domyślnie miesza przykłady na początku
 każdej epoki.
+
+### Walidacja i historia
+
+```python
+model.trenuj(
+    dane_treningowe, etykiety_treningowe,
+    epoki=20,
+    walidacja=(dane_walidacyjne, etykiety_walidacyjne),
+)
+print(model.historia["wal_strata"])
+```
+
+`historia` zawiera stratę treningową i walidacyjną z każdej epoki.
+
+## Narzędzia danych i metryki
+
+```python
+x_trening, x_test, y_trening, y_test = ta.podziel_dane(
+    dane, etykiety, udzial_testowy=0.2, ziarno=42
+)
+wyniki = model.przewidz(x_test)
+print(ta.dokladnosc(wyniki, y_test))
+print(ta.blad_sredni_bezwzgledny(wyniki, y_test))
+```
+
+- `podziel_dane()` zwraca dane i etykiety treningowe/testowe.
+- `dokladnosc()` obsługuje klasyfikację binarną i wieloklasową.
+- `blad_sredni_bezwzgledny()` zwraca MAE jako zwykłą liczbę.
 
 ## Zapis i import modelu
 

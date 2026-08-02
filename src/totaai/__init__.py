@@ -1,14 +1,41 @@
 """TotaAI: proste AI z polskim API."""
 
-from .tensor import Tensor
-from .warstwy import Warstwa, WarstwaLiniowa, ReLU, Sigmoid, Softmax
-from .straty import MSE, EntropiaKrzyzowa
-from .optymalizatory import SGD, Adam
 from .model import Model
+from .narzedzia import blad_sredni_bezwzgledny, dokladnosc, podziel_dane
+from .optymalizatory import SGD, Adam
+from .straty import MAE, MSE, EntropiaBinarna, EntropiaKrzyzowa
+from .tensor import Tensor
+from .warstwy import (
+    Dropout,
+    LeakyReLU,
+    ReLU,
+    Sigmoid,
+    Softmax,
+    Tanh,
+    Warstwa,
+    WarstwaLiniowa,
+)
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
-    "Tensor", "Warstwa", "WarstwaLiniowa", "ReLU", "Sigmoid", "Softmax",
-    "MSE", "EntropiaKrzyzowa", "SGD", "Adam", "Model",
+    "MAE",
+    "MSE",
+    "SGD",
+    "Adam",
+    "Dropout",
+    "EntropiaBinarna",
+    "EntropiaKrzyzowa",
+    "LeakyReLU",
+    "Model",
+    "ReLU",
+    "Sigmoid",
+    "Softmax",
+    "Tanh",
+    "Tensor",
+    "Warstwa",
+    "WarstwaLiniowa",
+    "blad_sredni_bezwzgledny",
+    "dokladnosc",
+    "podziel_dane",
 ]

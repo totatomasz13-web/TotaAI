@@ -29,16 +29,17 @@ model.trenuj(ta.Tensor([[0, 0], [0, 1], [1, 0], [1, 1]]),
 print(model.przewidz(ta.Tensor([[1, 0]])).dane)
 ```
 
-## Co działa w wersji 0.2
+## Co działa w wersji 0.3
 
 Rdzeń 0.2 zawiera tensor z automatycznym różniczkowaniem, warstwy liniowe, ReLU,
 sigmoid, softmax, funkcje straty MSE i entropię krzyżową oraz SGD i Adam.
 - Tensor NumPy z automatycznym różniczkowaniem.
-- Warstwy: `WarstwaLiniowa`, `ReLU`, `Sigmoid`, `Softmax`.
-- Funkcje straty: `MSE`, `EntropiaKrzyzowa`.
+- Warstwy: `WarstwaLiniowa`, `ReLU`, `Sigmoid`, `Softmax`, `Tanh`, `LeakyReLU`, `Dropout`.
+- Funkcje straty: `MSE`, `MAE`, `EntropiaBinarna`, `EntropiaKrzyzowa`.
 - Optymalizatory: `SGD`, `Adam`.
-- Trening pełnym zbiorem lub partiami, tasowanie i ocena walidacyjna.
+- Trening pełnym zbiorem lub partiami, tasowanie, walidacja i historia strat.
 - Podsumowanie architektury oraz zapis/odczyt wag.
+- Narzędzia: `podziel_dane`, `dokladnosc`, `blad_sredni_bezwzgledny`.
 
 CNN, RNN, Transformery, GPU, autoenkodery i gotowe loadery danych nie są
 jeszcze dostępne. Ich status będzie widoczny w dokumentacji i changelogu.
