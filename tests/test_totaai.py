@@ -23,3 +23,13 @@ def test_model_mozna_zapisac_i_wczytac(tmp_path):
     model.zapisz(sciezka)
     po = ta.Model.wczytaj(sciezka).przewidz([[1, 2]]).dane
     np.testing.assert_allclose(przed, po)
+
+
+def test_trening_partiami_i_podsumowanie():
+    model = ta.Model().dodaj(ta.WarstwaLiniowa(2, 1))
+    model.skompiluj(ta.MSE(), ta.SGD(tempo=0.05))
+    historia = model.trenuj([[0, 0], [1, 1], [2, 2]], [[0], [2], [4]],
+                            epoki=3, rozmiar_partii=2, tasuj=False, pokazuj_postep=False)
+    assert len(historia) == 3
+    assert "Razem:" in model.podsumowanie()
+    assert model.ocen([[1, 1]], [[2]]) >= 0
