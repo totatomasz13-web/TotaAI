@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class SGD:
     def __init__(self, tempo=0.01, ped=0.0): self.tempo, self.ped = tempo, ped
     def krok(self, parametry):
@@ -17,7 +14,7 @@ class Adam(SGD):
         self.t += 1
         for p in parametry:
             if p.gradient is None: continue
-            key = id(p); self.m[key] = self.beta1 * self.m.get(key, np.zeros_like(p.dane)) + (1 - self.beta1) * p.gradient
-            self.v[key] = self.beta2 * self.v.get(key, np.zeros_like(p.dane)) + (1 - self.beta2) * p.gradient ** 2
+            xp = p.modul; key = id(p); self.m[key] = self.beta1 * self.m.get(key, xp.zeros_like(p.dane)) + (1 - self.beta1) * p.gradient
+            self.v[key] = self.beta2 * self.v.get(key, xp.zeros_like(p.dane)) + (1 - self.beta2) * p.gradient ** 2
             m = self.m[key] / (1 - self.beta1 ** self.t); v = self.v[key] / (1 - self.beta2 ** self.t)
-            p.dane -= self.tempo * m / (np.sqrt(v) + self.epsilon)
+            p.dane -= self.tempo * m / (xp.sqrt(v) + self.epsilon)
