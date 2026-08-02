@@ -191,3 +191,62 @@ modeli pochodzących z nieznanego źródła.
 Obecna wersja nie zawiera jeszcze CNN, RNN, Transformerów, autoenkoderów,
 przetwarzania obrazów/audio, GPU ani gotowych loaderów danych. Te elementy są
 planowane jako osobne moduły, aby nie komplikować stabilnego rdzenia.
+
+## Tutoriale
+
+### 1. XOR: pierwszy model
+
+```python
+model = ta.Model().dodaj(
+    ta.WarstwaLiniowa(2, 8), ta.Sigmoid(),
+    ta.WarstwaLiniowa(8, 1), ta.Sigmoid(),
+)
+model.skompiluj(ta.MSE(), ta.Adam(tempo=0.05))
+model.trenuj(
+    [[0, 0], [0, 1], [1, 0], [1, 1]],
+    [[0], [1], [1], [0]],
+    epoki=500,
+    pokazuj_postep=False,
+)
+print(model.przewidz([[1, 0]]).dane)
+```
+
+### 2. Gradient pojedynczego tensora
+
+```python
+x = ta.Tensor([2.0], wymaga_gradientu=True)
+y = x * x + 3
+assert x.gradient[0] == 4.0
+```
+
+### 3. Klasyfikacja trzech klas
+
+```python
+model = ta.Model().dodaj(
+    ta.WarstwaLiniowa(4, 16), ta.ReLU(),
+    ta.WarstwaLiniowa(16, 3), ta.Softmax(),
+)
+model.skompiluj(ta.EntropiaKrzyzowa(), ta.Adam())
+model.trenuj(dane, klasy, epoki=50, rozmiar_partii=32)
+klasy_przewidziane = model.przewidz(dane_testowe).dane.argmax(axis=-1)
+```
+
+### 4. Partie i walidacja
+
+```python
+model.trenuj(
+    dane_treningowe, etykiety_treningowe,
+    epoki=25, rozmiar_partii=32, tasuj=True,
+)
+blad = model.ocen(dane_walidacyjne, etykiety_walidacyjne)
+print(f"Blad walidacji: {blad:.4f}")
+model.podsumowanie()
+```
+
+### 5. Zapis i odczyt
+
+```python
+model.zapisz("model.tota")
+odtworzony = ta.Model.wczytaj("model.tota")
+wynik = odtworzony.przewidz(dane_testowe)
+```
