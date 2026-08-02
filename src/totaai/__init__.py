@@ -1,5 +1,6 @@
 """TotaAI: proste AI z polskim API."""
 
+from .backend import cuda_dostepna
 from .model import Model
 from .narzedzia import blad_sredni_bezwzgledny, dokladnosc, podziel_dane
 from .optymalizatory import SGD, Adam
@@ -36,6 +37,7 @@ __all__ = [
     "Warstwa",
     "WarstwaLiniowa",
     "blad_sredni_bezwzgledny",
+    "cuda_dostepna",
     "dokladnosc",
     "podziel_dane",
 ]

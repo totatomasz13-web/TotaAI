@@ -40,6 +40,28 @@ sigmoid, softmax, funkcje straty MSE i entropię krzyżową oraz SGD i Adam.
 - Trening pełnym zbiorem lub partiami, tasowanie, walidacja i historia strat.
 - Podsumowanie architektury oraz zapis/odczyt wag.
 - Narzędzia: `podziel_dane`, `dokladnosc`, `blad_sredni_bezwzgledny`.
+- CPU przez NumPy oraz opcjonalne CUDA przez CuPy.
+
+## CUDA / GPU
+
+CPU działa bez dodatkowych zależności. Dla GPU z CUDA 13:
+
+```bash
+pip install "totaai[cuda]"
+```
+
+```python
+import totaai as ta
+
+if ta.cuda_dostepna():
+    model.na("cuda")
+    wynik = model.przewidz([[1, 2]])
+    print(wynik.urzadzenie)  # cuda
+```
+
+`Tensor(..., urzadzenie="cuda")` tworzy tensor GPU, a `tensor.numpy()`
+kopiuje wynik do NumPy na CPU. CPU pozostaje domyślnym i w pełni wspieranym
+trybem.
 
 CNN, RNN, Transformery, GPU, autoenkodery i gotowe loadery danych nie są
 jeszcze dostępne. Ich status będzie widoczny w dokumentacji i changelogu.

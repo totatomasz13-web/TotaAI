@@ -71,6 +71,24 @@ Publiczne właściwości i metody:
 
 Obsługiwane są operatory `+`, `-`, `*`, `@` oraz jednoargumentowy `-`.
 
+### Urządzenia CPU i CUDA
+
+```python
+import totaai as ta
+
+x_cpu = ta.Tensor([1, 2])
+print(x_cpu.urzadzenie)  # cpu
+
+if ta.cuda_dostepna():
+    x_gpu = ta.Tensor([1, 2], urzadzenie="cuda")
+    print(x_gpu.numpy())  # kopia NumPy na CPU
+```
+
+CUDA jest opcjonalne i wymaga instalacji `pip install "totaai[cuda]"`.
+Tensory używane w jednej operacji muszą znajdować się na tym samym urządzeniu.
+Model przeniesiesz przez `model.na("cuda")`; jego predykcje automatycznie
+umieszczają zwykłe listy wejściowe na urządzeniu modelu.
+
 ## Warstwy
 
 Każda warstwa może być wywołana jako funkcja (`warstwa(x)`) albo przez

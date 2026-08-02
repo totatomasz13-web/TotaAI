@@ -14,6 +14,13 @@ class Model:
         self.historia = {"strata": [], "wal_strata": []}
     def dodaj(self, *warstwy): self.warstwy.extend(warstwy); return self
     def skompiluj(self, strata, optymalizator): self.strata, self.optymalizator = strata, optymalizator; return self
+    def na(self, urzadzenie):
+        """Przenosi trenowalne parametry modelu na CPU lub CUDA."""
+        for parametr in self.parametry(): parametr.przenies(urzadzenie)
+        return self
+    @property
+    def urzadzenie(self):
+        return self.parametry()[0].urzadzenie if self.parametry() else "cpu"
     def ustaw_tryb(self, szkolenie=True):
         """Przełącza warstwy zależne od trybu, np. Dropout."""
         self.szkolenie = szkolenie
@@ -29,7 +36,7 @@ class Model:
         """Wykonuje predykcję w trybie ewaluacji, bez losowości Dropout."""
         poprzedni_tryb = self.szkolenie
         self.ustaw_tryb(False)
-        wynik = self.przepusc(x if isinstance(x, Tensor) else Tensor(x))
+        wynik = self.przepusc(x if isinstance(x, Tensor) else Tensor(x, urzadzenie=self.urzadzenie))
         self.ustaw_tryb(poprzedni_tryb)
         return wynik
     def parametry(self):
@@ -50,7 +57,7 @@ class Model:
             straty_epoki = []
             for poczatek in range(0, len(x_dane), rozmiar_partii):
                 partia = indeksy[poczatek:poczatek + rozmiar_partii]
-                x, y = Tensor(x_dane[partia]), Tensor(y_dane[partia])
+                x, y = Tensor(x_dane[partia], urzadzenie=self.urzadzenie), Tensor(y_dane[partia], urzadzenie=self.urzadzenie)
                 self.optymalizator.wyzeruj_gradient(self.parametry())
                 wynik = self.strata(self.przepusc(x), y); wynik.wstecz(); self.optymalizator.krok(self.parametry())
                 straty_epoki.append(float(wynik.dane))

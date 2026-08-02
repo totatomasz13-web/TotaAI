@@ -68,3 +68,13 @@ def test_historia_walidacji_i_dzielenie_tensorow():
     x = ta.Tensor([4.0], wymaga_gradientu=True)
     (x / 2).wstecz()
     np.testing.assert_allclose(x.gradient, [0.5])
+
+
+@pytest.mark.skipif(not ta.cuda_dostepna(), reason="CUDA nie jest dostępna")
+def test_tensor_i_model_na_cuda():
+    x = ta.Tensor([3.0], wymaga_gradientu=True, urzadzenie="cuda")
+    (x * x).wstecz()
+    np.testing.assert_allclose(x.numpy(), [3.0])
+    np.testing.assert_allclose(x.gradient.get(), [6.0])
+    model = ta.Model().dodaj(ta.WarstwaLiniowa(1, 1)).skompiluj(ta.MSE(), ta.SGD()).na("cuda")
+    assert model.przewidz([[1]]).urzadzenie == "cuda"
