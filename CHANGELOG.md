@@ -35,3 +35,9 @@
 * deploy Pages with Wrangler CLI ([4448f77](https://github.com/totatomasz13-web/TotaAI/commit/4448f77e57a18107902a1fb815bbb6208bd38e9a))
 * make documentation visible from homepage ([cf43073](https://github.com/totatomasz13-web/TotaAI/commit/cf430735e8a98478d3e956b8bbd5b35c76ed6a2f))
 * make model serialization reliable ([879f671](https://github.com/totatomasz13-web/TotaAI/commit/879f671cca15088ac5f0c1d1f182ae6a1e075a76))
+## 1.0.0
+
+- Dodano znakowy tokenizer z tokenami specjalnymi.
+- Dodano embeddingi, kodowanie pozycyjne, LayerNorm i residual Transformer blocks.
+- Dodano self-attention, multi-head attention oraz TransformerLM.
+- Dodano cross-entropy, AdamW, generowanie tekstu, warmup i checkpointy.

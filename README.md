@@ -29,7 +29,7 @@ model.trenuj(ta.Tensor([[0, 0], [0, 1], [1, 0], [1, 1]]),
 print(model.przewidz(ta.Tensor([[1, 0]])).dane)
 ```
 
-## Co działa w wersji 0.3
+## Co działa w wersji 1.0.0
 
 Rdzeń 0.2 zawiera tensor z automatycznym różniczkowaniem, warstwy liniowe, ReLU,
 sigmoid, softmax, funkcje straty MSE i entropię krzyżową oraz SGD i Adam.
@@ -41,6 +41,10 @@ sigmoid, softmax, funkcje straty MSE i entropię krzyżową oraz SGD i Adam.
 - Podsumowanie architektury oraz zapis/odczyt wag.
 - Narzędzia: `podziel_dane`, `dokladnosc`, `blad_sredni_bezwzgledny`.
 - CPU przez NumPy oraz opcjonalne CUDA przez CuPy.
+- Znakowy `Tokenizer` z tokenami `<PAD>`, `<UNK>`, `<BOS>` i `<EOS>`.
+- `Embedding`, positional encoding, `LayerNorm`, self-attention i multi-head attention.
+- `TransformerBlock` oraz `TransformerLM` z generowaniem przez temperaturę, top-k i top-p.
+- `CrossEntropyLoss`, `AdamW`, batchowanie, warmup, clipping gradientów i checkpointy dla małych modeli językowych.
 
 ## CUDA / GPU
 
@@ -63,8 +67,9 @@ if ta.cuda_dostepna():
 kopiuje wynik do NumPy na CPU. CPU pozostaje domyślnym i w pełni wspieranym
 trybem.
 
-CNN, RNN, Transformery, GPU, autoenkodery i gotowe loadery danych nie są
-jeszcze dostępne. Ich status będzie widoczny w dokumentacji i changelogu.
+Wersja 1.0 udostępnia mały, edukacyjny Transformer działający na CPU przez
+NumPy. Jest przeznaczony do nauki i eksperymentów na małych zbiorach tekstu,
+a nie do trenowania modeli w skali produkcyjnej.
 
 `Model.trenuj()` obsługuje batchowanie i tasowanie danych, a `ocen()` pozwala
 sprawdzić stratę na osobnym zbiorze. `podsumowanie()` wypisuje architekturę i

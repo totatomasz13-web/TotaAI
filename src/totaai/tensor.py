@@ -63,6 +63,40 @@ class Tensor:
                 if self.wymaga_gradientu: self._dodaj_gradient(wynik.gradient @ self.modul.swapaxes(other.dane, -1, -2))
                 if other.wymaga_gradientu: other._dodaj_gradient(self.modul.swapaxes(self.dane, -1, -2) @ wynik.gradient)
         wynik._wstecz = wstecz; return wynik
+    def __getitem__(self, indeks):
+        dane = self.dane[indeks]
+        wynik = Tensor(dane, self.wymaga_gradientu, (self,), urzadzenie=self.urzadzenie)
+        def wstecz():
+            if wynik.gradient is not None and self.wymaga_gradientu:
+                gradient = self.modul.zeros_like(self.dane)
+                gradient[indeks] += wynik.gradient
+                self._dodaj_gradient(gradient)
+        wynik._wstecz = wstecz
+        return wynik
+    def reshape(self, *ksztalt):
+        if len(ksztalt) == 1 and isinstance(ksztalt[0], (tuple, list)):
+            ksztalt = tuple(ksztalt[0])
+        wynik = Tensor(self.dane.reshape(*ksztalt), self.wymaga_gradientu, (self,), urzadzenie=self.urzadzenie)
+        wynik._wstecz = lambda: self._dodaj_gradient(wynik.gradient.reshape(self.ksztalt)) if wynik.gradient is not None and self.wymaga_gradientu else None
+        return wynik
+    def transpose(self, *osie):
+        osie = osie or tuple(reversed(range(self.dane.ndim)))
+        wynik = Tensor(self.modul.transpose(self.dane, osie), self.wymaga_gradientu, (self,), urzadzenie=self.urzadzenie)
+        odwrotne = tuple(osie.index(i) for i in range(len(osie)))
+        wynik._wstecz = lambda: self._dodaj_gradient(self.modul.transpose(wynik.gradient, odwrotne)) if wynik.gradient is not None and self.wymaga_gradientu else None
+        return wynik
+    @property
+    def T(self): return self.transpose()
+    def exp(self):
+        dane = self.modul.exp(self.dane)
+        wynik = Tensor(dane, self.wymaga_gradientu, (self,), urzadzenie=self.urzadzenie)
+        wynik._wstecz = lambda: self._dodaj_gradient(wynik.gradient * dane) if wynik.gradient is not None and self.wymaga_gradientu else None
+        return wynik
+    def log(self):
+        dane = self.modul.log(self.dane)
+        wynik = Tensor(dane, self.wymaga_gradientu, (self,), urzadzenie=self.urzadzenie)
+        wynik._wstecz = lambda: self._dodaj_gradient(wynik.gradient / self.dane) if wynik.gradient is not None and self.wymaga_gradientu else None
+        return wynik
     def suma(self):
         wynik = Tensor(self.dane.sum(), self.wymaga_gradientu, (self,), urzadzenie=self.urzadzenie)
         wynik._wstecz = lambda: self._dodaj_gradient(self.modul.ones_like(self.dane) * wynik.gradient) if wynik.gradient is not None and self.wymaga_gradientu else None
